@@ -27,40 +27,38 @@ graph TD
     style C fill:#e8f5e8
 ```
 
-````
-
 ## Jobs & Dependencies
 
-| Job Name             | Purpose                        | Dependencies | Execution Context   |
-| -------------------- | ------------------------------ | ------------ | ------------------ |
-| copilot-setup-steps  | Validate repo setup for Copilot| None         | ubuntu-latest      |
+| Job Name            | Purpose                         | Dependencies | Execution Context |
+| ------------------- | ------------------------------- | ------------ | ----------------- |
+| copilot-setup-steps | Validate repo setup for Copilot | None         | ubuntu-latest     |
 
 ## Requirements Matrix
 
 ### Functional Requirements
 
-| ID      | Requirement                        | Priority | Acceptance Criteria                |
-| ------- | ----------------------------------- | -------- | ---------------------------------- |
-| REQ-001 | Checkout repository code            | High     | Code is available for steps        |
-| REQ-002 | Set up Node.js environment          | High     | Node.js 22 is available            |
-| REQ-003 | Install dependencies                | High     | All dependencies installed         |
-| REQ-004 | Run linter                          | High     | Lint passes or fails with report   |
-| REQ-005 | Build project                       | High     | Build completes or fails           |
-| REQ-006 | Run type check                      | High     | Type check passes or fails         |
+| ID      | Requirement                | Priority | Acceptance Criteria              |
+| ------- | -------------------------- | -------- | -------------------------------- |
+| REQ-001 | Checkout repository code   | High     | Code is available for steps      |
+| REQ-002 | Set up Node.js environment | High     | Node.js 22 is available          |
+| REQ-003 | Install dependencies       | High     | All dependencies installed       |
+| REQ-004 | Run linter                 | High     | Lint passes or fails with report |
+| REQ-005 | Build project              | High     | Build completes or fails         |
+| REQ-006 | Run type check             | High     | Type check passes or fails       |
 
 ### Security Requirements
 
-| ID      | Requirement                  | Implementation Constraint         |
-| ------- | ---------------------------- | --------------------------------- |
-| SEC-001 | Read repository contents     | `contents: read` required         |
-| SEC-002 | Restrict permissions         | Principle of least privilege      |
+| ID      | Requirement              | Implementation Constraint    |
+| ------- | ------------------------ | ---------------------------- |
+| SEC-001 | Read repository contents | `contents: read` required    |
+| SEC-002 | Restrict permissions     | Principle of least privilege |
 
 ### Performance Requirements
 
-| ID       | Metric         | Target         | Measurement Method         |
-| -------- | -------------- | -------------- | -------------------------- |
-| PERF-001 | Setup time     | ≤ 30 min/job   | Job timeout configuration  |
-| PERF-002 | Success rate   | 100%           | Workflow run status        |
+| ID       | Metric       | Target       | Measurement Method        |
+| -------- | ------------ | ------------ | ------------------------- |
+| PERF-001 | Setup time   | ≤ 30 min/job | Job timeout configuration |
+| PERF-002 | Success rate | 100%         | Workflow run status       |
 
 ## Input/Output Contracts
 
@@ -73,7 +71,7 @@ None required
 # Repository Triggers
 paths: [.github/workflows/copilot-setup-steps.yml]
 branches: [all]
-````
+```
 
 ### Outputs
 

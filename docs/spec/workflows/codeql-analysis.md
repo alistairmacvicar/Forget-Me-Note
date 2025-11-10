@@ -27,39 +27,37 @@ graph TD
     style C fill:#e8f5e8
 ```
 
-````
-
 ## Jobs & Dependencies
 
-| Job Name | Purpose                | Dependencies | Execution Context   |
-| -------- | ---------------------- | ------------ | ------------------ |
-| analyze  | Run CodeQL analysis    | None         | ubuntu-latest      |
+| Job Name | Purpose             | Dependencies | Execution Context |
+| -------- | ------------------- | ------------ | ----------------- |
+| analyze  | Run CodeQL analysis | None         | ubuntu-latest     |
 
 ## Requirements Matrix
 
 ### Functional Requirements
 
-| ID      | Requirement                                 | Priority | Acceptance Criteria                |
-| ------- | -------------------------------------------- | -------- | ---------------------------------- |
-| REQ-001 | Analyze code for security vulnerabilities    | High     | CodeQL runs on all triggers        |
-| REQ-002 | Support multiple languages via matrix        | Medium   | Matrix includes required languages |
-| REQ-003 | Store results in security events             | High     | Results uploaded to GitHub         |
+| ID      | Requirement                               | Priority | Acceptance Criteria                |
+| ------- | ----------------------------------------- | -------- | ---------------------------------- |
+| REQ-001 | Analyze code for security vulnerabilities | High     | CodeQL runs on all triggers        |
+| REQ-002 | Support multiple languages via matrix     | Medium   | Matrix includes required languages |
+| REQ-003 | Store results in security events          | High     | Results uploaded to GitHub         |
 
 ### Security Requirements
 
-| ID      | Requirement                  | Implementation Constraint         |
-| ------- | ---------------------------- | --------------------------------- |
-| SEC-001 | Write security events         | `security-events: write` required |
-| SEC-002 | Read repository contents      | `contents: read` required         |
-| SEC-003 | Read internal CodeQL packs    | `packages: read` if needed        |
-| SEC-004 | Restrict permissions          | Principle of least privilege      |
+| ID      | Requirement                | Implementation Constraint         |
+| ------- | -------------------------- | --------------------------------- |
+| SEC-001 | Write security events      | `security-events: write` required |
+| SEC-002 | Read repository contents   | `contents: read` required         |
+| SEC-003 | Read internal CodeQL packs | `packages: read` if needed        |
+| SEC-004 | Restrict permissions       | Principle of least privilege      |
 
 ### Performance Requirements
 
-| ID       | Metric         | Target         | Measurement Method         |
-| -------- | -------------- | -------------- | -------------------------- |
-| PERF-001 | Analysis time  | ≤ 360 min/job  | Job timeout configuration  |
-| PERF-002 | Success rate   | 100%           | Workflow run status        |
+| ID       | Metric        | Target        | Measurement Method        |
+| -------- | ------------- | ------------- | ------------------------- |
+| PERF-001 | Analysis time | ≤ 360 min/job | Job timeout configuration |
+| PERF-002 | Success rate  | 100%          | Workflow run status       |
 
 ## Input/Output Contracts
 
@@ -72,7 +70,7 @@ None required
 # Repository Triggers
 branches: [main]
 paths: [all]
-````
+```
 
 ### Outputs
 

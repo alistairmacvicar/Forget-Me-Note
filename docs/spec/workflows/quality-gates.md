@@ -44,42 +44,40 @@ graph TD
     style F fill:#e8f5e8
 ```
 
-````
-
 ## Jobs & Dependencies
 
-| Job Name   | Purpose                        | Dependencies | Execution Context   |
-| ---------- | ------------------------------ | ------------ | ------------------ |
-| lint       | Enforce code style and quality | None         | ubuntu-latest      |
-| typecheck  | Ensure type safety             | None         | ubuntu-latest      |
-| build      | Validate build integrity       | None         | ubuntu-latest      |
-| dep-scan   | Audit dependencies for security| None         | ubuntu-latest      |
+| Job Name  | Purpose                         | Dependencies | Execution Context |
+| --------- | ------------------------------- | ------------ | ----------------- |
+| lint      | Enforce code style and quality  | None         | ubuntu-latest     |
+| typecheck | Ensure type safety              | None         | ubuntu-latest     |
+| build     | Validate build integrity        | None         | ubuntu-latest     |
+| dep-scan  | Audit dependencies for security | None         | ubuntu-latest     |
 
 ## Requirements Matrix
 
 ### Functional Requirements
 
-| ID      | Requirement                        | Priority | Acceptance Criteria                |
-| ------- | ----------------------------------- | -------- | ---------------------------------- |
-| REQ-001 | Lint code for style and errors      | High     | Lint passes or fails with report   |
-| REQ-002 | Type check for correctness         | High     | Type check passes or fails         |
-| REQ-003 | Build project                      | High     | Build completes or fails           |
-| REQ-004 | Scan dependencies for vulnerabilities| High   | Audit passes or fails with report  |
+| ID      | Requirement                           | Priority | Acceptance Criteria               |
+| ------- | ------------------------------------- | -------- | --------------------------------- |
+| REQ-001 | Lint code for style and errors        | High     | Lint passes or fails with report  |
+| REQ-002 | Type check for correctness            | High     | Type check passes or fails        |
+| REQ-003 | Build project                         | High     | Build completes or fails          |
+| REQ-004 | Scan dependencies for vulnerabilities | High     | Audit passes or fails with report |
 
 ### Security Requirements
 
-| ID      | Requirement                  | Implementation Constraint         |
-| ------- | ---------------------------- | --------------------------------- |
-| SEC-001 | Read repository contents     | `contents: read` required         |
-| SEC-002 | Restrict permissions         | Principle of least privilege      |
-| SEC-003 | Audit dependencies           | Security scan required            |
+| ID      | Requirement              | Implementation Constraint    |
+| ------- | ------------------------ | ---------------------------- |
+| SEC-001 | Read repository contents | `contents: read` required    |
+| SEC-002 | Restrict permissions     | Principle of least privilege |
+| SEC-003 | Audit dependencies       | Security scan required       |
 
 ### Performance Requirements
 
-| ID       | Metric         | Target         | Measurement Method         |
-| -------- | -------------- | -------------- | -------------------------- |
-| PERF-001 | Job time       | ≤ 30 min/job   | Job timeout configuration  |
-| PERF-002 | Success rate   | 100%           | Workflow run status        |
+| ID       | Metric       | Target       | Measurement Method        |
+| -------- | ------------ | ------------ | ------------------------- |
+| PERF-001 | Job time     | ≤ 30 min/job | Job timeout configuration |
+| PERF-002 | Success rate | 100%         | Workflow run status       |
 
 ## Input/Output Contracts
 
@@ -92,7 +90,7 @@ None required
 # Repository Triggers
 branches: [main]
 paths: [all]
-````
+```
 
 ### Outputs
 
