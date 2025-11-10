@@ -1,5 +1,5 @@
 {
-  "name": "Forget-Me-Note",
+  "name": "forget-me-note",
   "type": "module",
   "private": true,
   "scripts": {
@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@nuxt/devtools": "^3.1.0",
@@ -21,6 +23,8 @@
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.14.0"
+    "@antfu/eslint-config": "^6.2.0",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "eslint": "^9.39.1"
   }
 }
