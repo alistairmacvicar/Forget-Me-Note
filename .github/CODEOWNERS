@@ -1,0 +1,11 @@
+# CODEOWNERS assigns required reviewers automatically.
+
+# Syntax: one pattern per line followed by GitHub handles or teams.
+
+# Keep patterns minimal; prefer directory-level ownership.
+
+# Uncomment and replace placeholder handles when owners are known.
+
+Root (global fallback)
+
+-       @alistairmacvicar
