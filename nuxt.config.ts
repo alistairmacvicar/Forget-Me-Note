@@ -9,10 +9,12 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/icon',
     '@nuxt/image',
+    '@nuxt/ui',
   ],
   eslint: {
     config: {
       standalone: false,
     },
   },
+  css: ['~/assets/css/main.css'],
 });
