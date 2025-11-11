@@ -9,12 +9,10 @@ Quick purpose
 Ordered checklist (do these in this order)
 
 1.  Run the start-project prompt
-
     - Run: `.github/prompts/start-project.prompt.md`
     - Goal: capture project name, primary language, package names, license, CI preferences and any special options.
 
 2.  Initialize project files (pick the appropriate initialization)
-
     - Node (minimal):
       npm init -y
     - Node + TypeScript:
@@ -29,30 +27,25 @@ Ordered checklist (do these in this order)
       New-Item -Path README.md -ItemType File; New-Item -Path .github -ItemType Directory
 
 3.  Run the workflow specification prompt (immediately after start-project)
-
     - Run: `.github/prompts/workflow-spec-creation.prompt.md`
     - Goal: produce a machine- and human-friendly spec for the CI/CD workflows you will add or modify. This step should be done right after capturing project metadata so the specs reflect your chosen stack and CI targets.
 
 4.  Generate README
-
     - Run: `.github/prompts/readme-creation.prompt.md`
     - Goal: synthesize the project's README using `.github` documentation and the metadata captured earlier.
 
 5.  Verify & update CODEOWNERS
-
     - Path: `.github/CODEOWNERS` (or `/CODEOWNERS` if you prefer root)
     - Minimal entry example:
 
       # CODEOWNERS assigns required reviewers automatically.
 
       Root (global fallback)
-
       -       @alistairmacvicar
 
     - If you change it, commit with message: `chore: update CODEOWNERS`
 
 6.  First commit, push and open PR
-
     - Commit everything and push to a short-lived branch, then open a PR for initial review.
     - Suggested commit messages:
       - `chore: initialize project` (for initial files)
