@@ -3,7 +3,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: [
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@nuxt/fonts',
     '@nuxt/eslint',
@@ -17,4 +16,24 @@ export default defineNuxtConfig({
     },
   },
   css: ['~/assets/css/main.css'],
+  ui: {
+    theme: {
+      colors: [
+        'back',
+        'card',
+        'front',
+        'normal',
+        'muted',
+        'border-highlight',
+        'border-normal',
+        'border-muted',
+        'action-primary',
+        'action-secondary',
+        'danger',
+        'warning',
+        'success',
+        'info',
+      ],
+    },
+  },
 });

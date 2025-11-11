@@ -1,2 +1,106 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
+/* https://coolors.co/0d1226-19244d-d9def2-eceef9-f7f8fd-e4a3f5-4b0a5c-a3f5e4-0a5c47-46931f */
+
+/* Set semantic colours in tailwind ( nuxtui can implicitly use these too now)  */
+@theme static {
+  --color-action-primary: var(--action-primary);
+  --color-card: var(--card);
+  --color-back: var(--back);
+  --color-card: var(--card);
+  --color-front: var(--front);
+  --color-normal: var(--normal);
+  --color-muted: var(--muted);
+  --color-border-highlight: var(--border-highlight);
+  --color-border-normal: var(--border-normal);
+  --color-border-muted: var(--border-muted);
+  --color-action-primary: var(--action-primary);
+  --color-action-secondary: var(--action-secondary);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-info: var(--info);
+}
+
+/*
+  Define semantic CSS variables for light mode on :root
+  and for dark mode under the `.dark` class. Tailwind maps
+  these variables to utilities via tailwind.config.js to use as classes
+*/
+:root {
+  /* defaults are all light mode */
+  font-family: 'Roboto', sans-serif;
+  /* right at the back */
+  --back: hsl(228, 50%, 90%);
+  /* cards */
+  --card: hsl(228, 50%, 95%);
+  /* hover on cards */
+  --front: hsl(228, 50%, 100%);
+  /* gradient on cards */
+  --gradient: linear-gradient(var(--card), var(--front));
+  /* default text */
+  --normal: hsl(228, 50%, 10%);
+  /* text when you want attention drawn to something else */
+  --muted: hsl(228, 30%, 10%);
+  /* card that should be hovered */
+  --border-highlight: hsl(228, 100%, 100%);
+  /* normal card border */
+  --border-normal: hsl(228, 25%, 50%);
+  /* card that doesn't need to draw attention to itself  */
+  --border-muted: hsl(228, 25%, 75%);
+  /*  things that do stuff */
+  --action-primary: hsl(288, 80%, 20%);
+  /* things that do stuff with some personality/accent  */
+  --action-secondary: hsl(168, 80%, 20%);
+  /* alerts */
+  --danger: hsl(0, 50%, 50%);
+  --warning: hsl(50, 75%, 50%);
+  --success: hsl(100, 65%, 50%);
+  --info: var(--muted);
+}
+
+.dark-mode {
+  --back: hsl(228, 50%, 10%);
+  /* cards */
+  --card: hsl(228, 50%, 20%);
+  /* hover on cards */
+  --front: hsl(228, 50%, 25%);
+  /* gradient on cards */
+  --gradient: linear-gradient(var(--card), var(--front));
+  /* default text */
+  --normal: hsl(228, 50%, 90%);
+  /* text when you want attention drawn to something else */
+  --muted: hsl(228, 30%, 90%);
+  /* card that should be hovered */
+  --border-highlight: hsl(228, 50%, 45%);
+  /* normal card border */
+  --border-normal: hsl(228, 50%, 35%);
+  /* card that doesn't need to draw attention to itself  */
+  --border-muted: hsl(228, 50%, 25%);
+  /*  things that do stuff */
+  --action-primary: hsl(288, 80%, 80%);
+  /* things that do stuff with some personality/accent  */
+  --action-secondary: hsl(168, 80%, 80%);
+  /* alerts */
+  --danger: hsl(0, 50%, 35%);
+  --warning: hsl(50, 75%, 35%);
+  --success: hsl(100, 65%, 35%);
+  --info: var(--muted);
+}
+
+/*
+  Tailwind base styles: apply the semantic variables as the default
+  body background and text color
+*/
+@layer base {
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--back);
+    color: var(--normal);
+    font-family: 'Roboto', sans-serif;
+  }
+}
