@@ -7,6 +7,7 @@ export default defineAppConfig({
       front: 'front',
       normal: 'normal',
       muted: 'muted',
+      hover: 'hover',
       'border-highlight': 'border-highlight',
       'border-normal': 'border-normal',
       'border-muted': 'border-muted',
