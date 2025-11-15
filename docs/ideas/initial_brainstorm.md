@@ -1,4 +1,4 @@
-# Forget-Me-Note — brain dump (organized)
+# Forget-Me-Note — brain dump
 
 ## Short summary
 
@@ -96,16 +96,3 @@ Notifications & surfaces
 - Auto-folder behaviour (mem notes does auto folders) — research existing patterns.
 - Templates and publish-to-knowledge-hub (inspired by Obsidian Publish).
 - Keep links and inline references intuitive; avoid AI rewriting that breaks user flow.
-
-## Next steps (suggested)
-
-1. Prioritise an MVP: quick capture, local storage, simple sync, and todos/reminders.
-2. Prototype the UI layout (VS Code-like) and a minimal chat that can summarise a note with a source link.
-3. Research MCP/Copilot push capabilities and calendar interoperability.
-4. Decide on markup format (markdown-like) and minimal schema for todos and archived items.
-
-## Questions for you
-
-- Which priorities do you want in MVP (capture, sync, AI, mobile)?
-- Any must-have integrations for first release (e.g., Google Calendar, GitHub)?
-- How conservative should we be about sending content to external LLMs (default redaction policy)?

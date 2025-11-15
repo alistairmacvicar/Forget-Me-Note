@@ -27,6 +27,7 @@ export default defineNuxtConfig({
         'border-highlight',
         'border-normal',
         'border-muted',
+        'hover',
         'action-primary',
         'action-secondary',
         'danger',
