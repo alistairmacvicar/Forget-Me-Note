@@ -1,3 +1,3 @@
 <template>
-  <NoteEditor />
+  <Editor />
 </template>

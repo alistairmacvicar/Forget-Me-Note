@@ -1,7 +1,6 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/typography';
 @import '@nuxt/ui';
-/* https://coolors.co/0d1226-19244d-d9def2-eceef9-f7f8fd-e4a3f5-4b0a5c-a3f5e4-0a5c47-46931f */
+/* https://github.com/rose-pine */
 
 /* Set semantic colours in tailwind ( nuxtui can implicitly use these too now)  */
 @theme static {
@@ -24,96 +23,112 @@
   --color-info: var(--info);
 }
 
-/* 
-  Define the markdown styling with @tailwind/typography. It's just the default styling for the app added to prose classes.
-*/
-@utility prose-normal {
-  --tw-prose-body: var(--color-normal);
-  --tw-prose-headings: var(--color-normal);
-  --tw-prose-lead: var(--color-normal);
-  --tw-prose-links: var(--color-action-secondary);
-  --tw-prose-bold: var(--color-normal);
-  --tw-prose-counters: var(--color-normal);
-  --tw-prose-bullets: var(--color-normal);
-  --tw-prose-hr: var(--color-normal);
-  --tw-prose-quotes: var(--color-normal);
-  --tw-prose-quote-borders: var(--color-normal);
-  --tw-prose-captions: var(--color-normal);
-  --tw-prose-code: var(--color-normal);
-  --tw-prose-pre-code: var(--color-normal);
-  --tw-prose-pre-bg: var(--color-normal);
-  --tw-prose-th-borders: var(--color-normal);
-  --tw-prose-td-borders: var(--color-normal);
-}
-
 /*
   Define semantic CSS variables for light mode on :root
   and for dark mode under the `.dark` class. Tailwind maps
   these variables to utilities via tailwind.config.js to use as classes
 */
 :root {
-  /* defaults are all light mode */
+  /* defaults are all light mode - Rosé Pine Dawn */
   font-family: 'Roboto', sans-serif;
-  /* right at the back */
-  --back: hsl(228, 50%, 90%);
-  /* cards */
-  --card: hsl(228, 50%, 95%);
-  /* hover on cards */
-  --front: hsl(228, 50%, 100%);
+  /* right at the back - dawn base */
+  --back: hsl(35, 60%, 96%);
+  /* cards - dawn surface */
+  --card: hsl(35, 100%, 98%);
+  /* hover on cards - dawn overlay */
+  --front: hsl(35, 40%, 92%);
   /* gradient on cards */
   --gradient: linear-gradient(var(--front), var(--card), var(--front));
-  /* default text */
-  --normal: hsl(228, 50%, 10%);
-  /* text when you want attention drawn to something else */
-  --muted: hsl(228, 30%, 10%);
-  /* card that should be hovered */
-  --border-highlight: hsl(228, 100%, 100%);
-  /* normal card border */
-  --border-normal: hsl(228, 25%, 50%);
-  /* card that doesn't need to draw attention to itself  */
-  --border-muted: hsl(228, 25%, 75%);
-  /* Color on item hover */
-  --hover: hsl(228, 50%, 96%);
-  /*  things that do stuff */
-  --action-primary: hsl(288, 80%, 80%);
-  /* things that do stuff with some personality/accent  */
-  --action-secondary: hsl(168, 80%, 80%);
+  /* default text - dawn text */
+  --normal: hsl(257, 14%, 40%);
+  /* text when you want attention drawn to something else - dawn subtle */
+  --muted: hsl(248, 12%, 47%);
+  /* card that should be hovered - dawn highlight high */
+  --border-highlight: hsl(300, 6%, 80%);
+  /* normal card border - dawn highlight med */
+  --border-normal: hsl(20, 14%, 86%);
+  /* card that doesn't need to draw attention to itself - dawn highlight low */
+  --border-muted: hsl(30, 35%, 94%);
+  /* Color on item hover - dawn overlay */
+  --hover: hsl(35, 40%, 92%);
+  /*  things that do stuff - dawn rose */
+  --action-primary: hsl(3, 53%, 67%);
+  /* things that do stuff with some personality/accent - dawn foam */
+  --action-secondary: hsl(189, 30%, 48%);
   /* alerts */
-  --danger: hsl(0, 50%, 50%);
-  --warning: hsl(50, 75%, 50%);
-  --success: hsl(100, 65%, 50%);
+  --danger: hsl(343, 35%, 55%);
+  --warning: hsl(35, 81%, 56%);
+  --success: hsl(197, 53%, 34%);
   --info: var(--muted);
+
+  /* Rosé Pine Dawn syntax colors */
+  --syntax-rose: hsl(3, 53%, 67%);
+  --syntax-pine: hsl(100, 29%, 45%);
+  --syntax-foam: hsl(189, 30%, 48%);
+  --syntax-gold: hsl(35, 81%, 56%);
+  --syntax-iris: hsl(268, 25%, 60%);
+  --syntax-love: hsl(343, 35%, 55%);
+
+  /* Typography scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
 }
 
 .dark-mode {
-  --back: hsl(228, 50%, 10%);
-  /* cards */
-  --card: hsl(228, 50%, 20%);
-  /* hover on cards */
-  --front: hsl(228, 50%, 25%);
+  /* Rosé Pine (base dark theme) */
+  /* right at the back - base */
+  --back: hsl(249, 22%, 12%);
+  /* cards - surface */
+  --card: hsl(247, 23%, 15%);
+  /* hover on cards - overlay */
+  --front: hsl(248, 25%, 18%);
   /* gradient on cards */
   --gradient: linear-gradient(var(--card), var(--front));
   /* default text */
-  --normal: hsl(228, 50%, 90%);
-  /* text when you want attention drawn to something else */
-  --muted: hsl(228, 30%, 90%);
-  /* card that should be hovered */
-  --border-highlight: hsl(228, 50%, 45%);
-  /* normal card border */
-  --border-normal: hsl(228, 50%, 35%);
-  /* card that doesn't need to draw attention to itself  */
-  --border-muted: hsl(228, 50%, 25%);
-  /* Color on item hover */
-  --hover: hsl(228, 50%, 35%);
-  /*  things that do stuff */
-  --action-primary: hsl(288, 80%, 20%);
-  /* things that do stuff with some personality/accent  */
-  --action-secondary: hsl(168, 80%, 20%);
+  --normal: hsl(245, 50%, 91%);
+  /* text when you want attention drawn to something else - subtle */
+  --muted: hsl(248, 15%, 61%);
+  /* card that should be hovered - highlight high */
+  --border-highlight: hsl(247, 15%, 36%);
+  /* normal card border - highlight med */
+  --border-normal: hsl(247, 15%, 28%);
+  /* card that doesn't need to draw attention to itself - highlight low */
+  --border-muted: hsl(249, 22%, 20%);
+  /* Color on item hover - overlay */
+  --hover: hsl(248, 25%, 18%);
+  /*  things that do stuff - rose */
+  --action-primary: hsl(10, 56%, 81%);
+  /* things that do stuff with some personality/accent - foam */
+  --action-secondary: hsl(189, 43%, 73%);
   /* alerts */
-  --danger: hsl(0, 50%, 35%);
-  --warning: hsl(50, 75%, 35%);
-  --success: hsl(100, 65%, 35%);
+  --danger: hsl(343, 76%, 68%);
+  --warning: hsl(35, 88%, 72%);
+  --success: hsl(197, 49%, 38%);
   --info: var(--muted);
+
+  /* Rosé Pine syntax colors */
+  --syntax-rose: hsl(10, 56%, 81%);
+  --syntax-pine: hsl(100, 28%, 46%);
+  --syntax-foam: hsl(189, 43%, 73%);
+  --syntax-gold: hsl(35, 88%, 72%);
+  --syntax-iris: hsl(267, 57%, 78%);
+  --syntax-love: hsl(343, 76%, 68%);
+
+  /* Typography scale - same as light mode */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
 }
 
 /*
@@ -130,5 +145,69 @@
     background-color: var(--back);
     color: var(--normal);
     font-family: 'Roboto', sans-serif;
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  /* Typography defaults */
+  h1 {
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.875rem;
+  }
+
+  h3 {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+  }
+
+  h4 {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 0.625rem;
+  }
+
+  h5 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+  }
+
+  h6 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    margin-bottom: 1rem;
+  }
+
+  code {
+    font-family:
+      ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'Liberation Mono', Menlo,
+      Monaco, Consolas, monospace;
+    font-size: var(--text-sm);
+  }
+
+  pre {
+    font-family:
+      ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'Liberation Mono', Menlo,
+      Monaco, Consolas, monospace;
+    font-size: var(--text-sm);
+    line-height: 1.5;
   }
 }
