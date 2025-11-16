@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { markdown } from '@codemirror/lang-markdown';
   import { languages } from '@codemirror/language-data';
+  import { Compartment } from '@codemirror/state';
   import { drawSelection, EditorView } from '@codemirror/view';
   import { GFM } from '@lezer/markdown';
   import {
@@ -13,13 +14,15 @@
   const text = ref('# ');
   const editorRef = ref<HTMLElement | undefined>(undefined);
   const editor = ref<EditorView | null>(null);
+  const isVimMode = ref(true);
+  const vimCompartment = new Compartment();
 
   onMounted(() => {
     editor.value = new EditorView({
       doc: text.value,
       parent: editorRef.value,
       extensions: [
-        vim(),
+        vimCompartment.of(vim()),
         drawSelection(),
         markdown({
           codeLanguages: languages,
@@ -34,9 +37,20 @@
   onBeforeUnmount(() => {
     editor.value?.destroy();
   });
+
+  const toggleVim = () => {
+    if (!editor.value) return;
+
+    isVimMode.value = !isVimMode.value;
+
+    editor.value.dispatch({
+      effects: vimCompartment.reconfigure(isVimMode.value ? vim() : []),
+    });
+  };
 </script>
 
 <template>
+  <UButton @click="toggleVim" />
   <div ref="editorRef" class="editor-container" />
 </template>
 
