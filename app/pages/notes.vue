@@ -1,8 +1,7 @@
 <template>
   <div class="layout">
-    <Sidebar class="menu" />
-    <NoteEditor class="editor" />
-    <Sidebar class="chat" />
+    <div class="menu"></div>
+    <Editor />
   </div>
 </template>
 
@@ -31,5 +30,8 @@
 
   .menu {
     grid-column: 1 / 2;
+    display: block;
+    width: 25vw;
+    background: red;
   }
 </style>
