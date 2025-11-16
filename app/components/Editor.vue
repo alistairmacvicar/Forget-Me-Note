@@ -50,8 +50,9 @@
 </script>
 
 <template>
-  <UButton @click="toggleVim" />
-  <div ref="editorRef" class="editor-container" />
+  <div>
+    <div ref="editorRef" class="editor-container" />
+  </div>
 </template>
 
 <style>
