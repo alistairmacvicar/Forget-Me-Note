@@ -1,7 +1,6 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      // Map semantic color names to Tailwind colors from tailwind.config.js
       back: 'back',
       card: 'card',
       front: 'front',
@@ -18,5 +17,13 @@ export default defineAppConfig({
       success: 'success',
       info: 'info',
     },
+    icons: {
+      light: 'ri:sun-line',
+      dark: 'ri:moon-line',
+    },
+  },
+  icon: {
+    mode: 'css',
+    cssLayer: 'base',
   },
 });

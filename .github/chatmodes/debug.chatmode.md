@@ -1,7 +1,7 @@
 ---
 description: 'Debug your application to find and fix a bug'
 tools: ['edit/editFiles', 'search', 'runCommands', 'usages', 'problems', 'testFailure', 'fetch', 'githubRepo', 'runTests', 'context7']
-model: Claude Sonnet 4.5
+model: GPT-5 mini
 ---
 
 # Debug Mode Instructions

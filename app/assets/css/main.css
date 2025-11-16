@@ -30,7 +30,7 @@
 */
 :root {
   /* defaults are all light mode - Rosé Pine Dawn */
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-mono);
   /* right at the back - dawn base */
   --back: hsl(35, 60%, 96%);
   /* cards - dawn surface */
@@ -81,7 +81,7 @@
 }
 
 .dark-mode {
-  /* Rosé Pine (base dark theme) */
+  /* Rosé Pine */
   /* right at the back - base */
   --back: hsl(249, 22%, 12%);
   /* cards - surface */
@@ -119,16 +119,6 @@
   --syntax-gold: hsl(35, 88%, 72%);
   --syntax-iris: hsl(267, 57%, 78%);
   --syntax-love: hsl(343, 76%, 68%);
-
-  /* Typography scale - same as light mode */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
 }
 
 /*
@@ -144,7 +134,7 @@
   body {
     background-color: var(--back);
     color: var(--normal);
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-mono);
     font-size: var(--text-base);
     line-height: 1.6;
   }

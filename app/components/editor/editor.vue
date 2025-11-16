@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { downloadToFile, lineNumbersRelative } from '#imports';
   import { markdown } from '@codemirror/lang-markdown';
   import { languages } from '@codemirror/language-data';
   import { Compartment } from '@codemirror/state';
@@ -12,17 +13,21 @@
   import { vim } from '@replit/codemirror-vim';
 
   const text = ref('# ');
+  const filename = ref('note');
   const editorRef = ref<HTMLElement | undefined>(undefined);
   const editor = ref<EditorView | null>(null);
   const isVimMode = ref(true);
   const vimCompartment = new Compartment();
+  const lineNumberCompartment = new Compartment();
 
   onMounted(() => {
     editor.value = new EditorView({
       doc: text.value,
       parent: editorRef.value,
       extensions: [
+        EditorView.contentAttributes.of({ spellcheck: 'true' }),
         vimCompartment.of(vim()),
+        lineNumberCompartment.of(lineNumbersRelative()),
         drawSelection(),
         markdown({
           codeLanguages: languages,
@@ -32,6 +37,8 @@
         prosemarkBaseThemeSetup(),
       ],
     });
+
+    editor.value.focus();
   });
 
   onBeforeUnmount(() => {
@@ -44,22 +51,44 @@
     isVimMode.value = !isVimMode.value;
 
     editor.value.dispatch({
-      effects: vimCompartment.reconfigure(isVimMode.value ? vim() : []),
+      effects: [
+        vimCompartment.reconfigure(isVimMode.value ? vim() : []),
+        lineNumberCompartment.reconfigure(
+          isVimMode.value ? lineNumbersRelative() : [],
+        ),
+      ],
     });
+  };
+
+  const save = () => {
+    text.value = editor.value?.state.doc.toString() || '';
+  };
+
+  const download = () => {
+    save();
+    downloadToFile(filename.value, text.value);
   };
 </script>
 
 <template>
-  <UButton @click="toggleVim" />
-  <div ref="editorRef" class="editor-container" />
+  <div>
+    <EditorMenu
+      class="sticky top-0 z-1"
+      :is-vim-mode="isVimMode"
+      @toggle-vim="toggleVim"
+      @download="download"
+    />
+    <div ref="editorRef" class="z-0 editor-container" />
+  </div>
 </template>
 
 <style>
   .editor-container {
     width: 100%;
     height: 100%;
+    padding: 2rem 2rem 0 2rem;
 
-    --font: 'Roboto', sans-serif;
+    --font: var(--font-mono);
 
     --font-size: var(--text-base);
     --font-size-h1: var(--text-4xl);
