@@ -1,9 +1,22 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import type { Note } from '~~/shared/types/note';
+  import { onDownload, onSave } from '~/composables/handle-note';
+
+  const note = ref<Note>({ title: '# ', body: '# ' });
+
+  const save = () => {
+    onSave([note.value]);
+  };
+
+  const download = () => {
+    onDownload(note.value);
+  };
+</script>
 
 <template>
   <div class="layout">
     <SideBar class="sidebar" />
-    <Editor class="overflow-auto" />
+    <Editor v-model:note="note" class="overflow-auto" />
   </div>
 </template>
 

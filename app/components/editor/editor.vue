@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { downloadToFile, lineNumbersRelative } from '#imports';
+  import type { EditorAction } from '~~/shared/types/editor-action';
+  import type { Note } from '~~/shared/types/note';
+  import { lineNumbersRelative } from '#imports';
   import { markdown } from '@codemirror/lang-markdown';
   import { languages } from '@codemirror/language-data';
   import { Compartment } from '@codemirror/state';
@@ -12,8 +14,8 @@
   } from '@prosemark/core';
   import { vim } from '@replit/codemirror-vim';
 
-  const text = ref('# ');
-  const filename = ref('note');
+  const props = defineProps<{ note: Note }>();
+  const emit = defineEmits<EditorAction>();
   const editorRef = ref<HTMLElement | undefined>(undefined);
   const editor = ref<EditorView | null>(null);
   const isVimMode = ref(true);
@@ -22,10 +24,17 @@
 
   onMounted(() => {
     editor.value = new EditorView({
-      doc: text.value,
+      doc: props.note.body,
       parent: editorRef.value,
       extensions: [
         EditorView.contentAttributes.of({ spellcheck: 'true' }),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            const newBody = update.state.doc.toString();
+            const updatedNote: Note = { ...props.note, body: newBody };
+            emit('update', updatedNote);
+          }
+        }),
         vimCompartment.of(vim()),
         lineNumberCompartment.of(lineNumbersRelative()),
         drawSelection(),
@@ -59,24 +68,16 @@
       ],
     });
   };
-
-  const save = () => {
-    text.value = editor.value?.state.doc.toString() || '';
-  };
-
-  const download = () => {
-    save();
-    downloadToFile(filename.value, text.value);
-  };
 </script>
 
 <template>
   <div>
     <EditorMenu
+      :note="props.note"
       class="sticky top-0 z-1"
       :is-vim-mode="isVimMode"
       @toggle-vim="toggleVim"
-      @download="download"
+      @download="emit('download', note)"
     />
     <div ref="editorRef" class="z-0 editor-container" />
   </div>

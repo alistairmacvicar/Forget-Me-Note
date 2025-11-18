@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import type { Panel } from '@codemirror/view';
   import useSidebarResize from '../../composables/useSidebarResize.client';
 
   const props = defineProps<{ activePanel?: Panel; menuShown?: boolean }>();

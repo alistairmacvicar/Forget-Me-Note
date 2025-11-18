@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-  import type {
-    DocumentStatus,
-    SyncStatus,
-  } from '~~/shared/types/document-status';
-  defineProps(['isVimMode']);
-  defineEmits(['toggleVim', 'download']);
+  import type { SaveStatus, SyncStatus } from '~~/shared/types/document-status';
+  import type { Note } from '~~/shared/types/note';
 
-  const saved = ref<DocumentStatus>('pending');
+  const { isVimMode, note } = defineProps<{
+    isVimMode?: boolean;
+    note?: Note;
+  }>();
+  const _emit = defineEmits(['toggleVim', 'download']);
+
+  const saved = ref<SaveStatus>('pending');
   const sync = ref<SyncStatus>('synced');
 </script>
 
@@ -57,7 +59,7 @@
       <Icon
         name="mdi-light:download"
         class="icon cursor-pointer"
-        @click="$emit('download')"
+        @click="$emit('download', note)"
       />
     </UTooltip>
   </div>
