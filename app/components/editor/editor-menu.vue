@@ -6,7 +6,7 @@
     isVimMode?: boolean;
     note?: Note;
   }>();
-  const _emit = defineEmits(['toggleVim', 'download']);
+  const _emit = defineEmits(['toggleVim', 'download', 'save']);
 
   const saved = ref<SaveStatus>('pending');
   const sync = ref<SyncStatus>('synced');
@@ -26,7 +26,11 @@
     </UTooltip>
 
     <UTooltip text="Save current document">
-      <Icon name="mdi-light:content-save" class="icon cursor-pointer" />
+      <Icon
+        name="mdi-light:content-save"
+        @click="$emit('save')"
+        class="icon cursor-pointer"
+      />
     </UTooltip>
 
     <UTooltip v-if="saved === 'success'" text="Current document saved.">

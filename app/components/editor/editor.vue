@@ -13,7 +13,7 @@
     prosemarkMarkdownSyntaxExtensions,
   } from '@prosemark/core';
   import { vim } from '@replit/codemirror-vim';
-
+  import { onDownload, onSave } from '~/composables/handle-note';
   const props = defineProps<{ note: Note }>();
   const emit = defineEmits<EditorAction>();
   const editorRef = ref<HTMLElement | undefined>(undefined);
@@ -68,6 +68,14 @@
       ],
     });
   };
+
+  const save = () => {
+    onSave([props.note]);
+  };
+
+  const download = () => {
+    onDownload(props.note);
+  };
 </script>
 
 <template>
@@ -77,7 +85,8 @@
       class="sticky top-0 z-1"
       :is-vim-mode="isVimMode"
       @toggle-vim="toggleVim"
-      @download="emit('download', note)"
+      @download="download"
+      @save="save"
     />
     <div ref="editorRef" class="z-0 editor-container" />
   </div>
