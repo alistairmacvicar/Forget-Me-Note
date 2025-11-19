@@ -2,6 +2,7 @@
   import type { Note } from '~~/shared/types/note';
   import { useNoteStore } from '~~/stores/note';
   import { onDownload, onSave } from '~/composables/handle-note';
+  import EditorTitle from './editor-title.vue';
 
   const { isVimMode, note } = defineProps<{
     isVimMode?: boolean;
@@ -10,8 +11,16 @@
   const _emit = defineEmits(['toggleVim']);
   const noteStore = useNoteStore();
 
+  const setTitle = () => {
+    const overlay = useOverlay();
+    const modal = overlay.create(EditorTitle);
+    modal.open();
+  };
+
   const save = async () => {
     noteStore.updateSaveStatus('pending');
+
+    if (!noteStore.title) setTitle();
 
     const result = await onSave(noteStore.getNote);
     noteStore.updateSaveStatus(result.saveStatus);
@@ -22,6 +31,7 @@
     onDownload(noteStore.getNote);
   };
 </script>
+<!-- TODO: add binding to document state so that the icons update -->
 
 <template>
   <div
