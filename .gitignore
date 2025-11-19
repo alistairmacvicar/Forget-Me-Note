@@ -24,3 +24,6 @@ logs
 !.env.example
 
 .copilot-tracking/
+
+dexie-cloud.json
+dexie-cloud.key

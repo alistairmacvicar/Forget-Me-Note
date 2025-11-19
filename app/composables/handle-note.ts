@@ -1,5 +1,4 @@
-import type { DeleteStatus, SaveStatus } from '~~/shared/types/document-status';
-import type { Embedding, Note } from '~~/shared/types/note';
+import type { DeleteStatus, Note, SaveStatus } from '~~/shared/types/note';
 import { db } from '~~/plugins/db.client';
 import { embedText } from './embed-text.client';
 
@@ -10,72 +9,95 @@ export const onDelete = async (notes: Note[]): Promise<DeleteStatus> => {
     return await db.notes
       .bulkDelete(notes.map((document) => document.id))
       .catch(() => 'failed')
-      .then(() => 'success');
+      .then(() => 'deleted');
   }
 
   return await db.notes
     .delete(notes[0].id)
     .catch(() => 'failed')
-    .then(() => 'success');
+    .then(() => 'deleted');
 };
 
-export const onCreation = async (notes: Note[]): Promise<SaveStatus> => {
+export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
   if (!notes[0]) return 'failed';
 
-  for (const document of notes) {
-    const title = document.title;
-    const body = document.body;
-    let success = true;
+  for (const note of notes) {
+    let saved;
+    const title = note.title;
+    const body = note.body;
+    const exists = !!note.id;
 
-    const embeddings: Embedding = await embedText(body).catch(() => {
+    if (exists) {
+      const embeddings = await embedText(note.body).catch(() => {
+        console.error('Failed to embed text, retaining previous embeddings');
+        return db.notes.get(note.id).embeddings || [];
+      });
+
+      await db.notes
+        .update(note.id, {
+          title,
+          body,
+          embeddings,
+        })
+        .catch(() => (saved = false))
+        .then(() => (saved = true));
+    } else {
+      const embeddings = await embedText(note.body).catch(() => {
+        console.error('Failed to embed text');
+        return [];
+      });
+
+      await db.notes
+        .add({ title, body, embeddings })
+        .catch(() => (saved = false))
+        .then(() => (saved = true));
+    }
+
+    if (!saved) return 'failed';
+  }
+
+  return 'saved';
+};
+
+export const onSave = async (
+  note: Note,
+): Promise<{ id: string | null; saveStatus: SaveStatus }> => {
+  let id: string | null = null;
+  let saveStatus: SaveStatus = 'saved';
+
+  if (!note) return { id, saveStatus };
+
+  const title = note.title;
+  const body = note.body;
+  const exists = !!note.id;
+
+  if (exists) {
+    const embeddings = await embedText(note.body).catch(() => {
+      console.error('Failed to embed text, retaining previous embeddings');
+      return db.notes.get(note.id).embeddings || [];
+    });
+
+    id = note.id;
+
+    await db.notes
+      .update(note.id, {
+        title,
+        body,
+        embeddings,
+      })
+      .catch(() => (saveStatus = 'failed'));
+  } else {
+    const embeddings = await embedText(note.body).catch(() => {
       console.error('Failed to embed text');
       return [];
     });
 
-    await db.notes
+    id = await db.notes
       .add({ title, body, embeddings })
-      .catch(() => (success = false))
-      .then(() => (success = true));
-
-    if (!success) return 'failed';
+      .catch(() => (saveStatus = 'failed'));
   }
 
-  return 'success';
-};
-
-export const onSave = async (notes: Note[]): Promise<SaveStatus> => {
-  if (!notes[0]) return 'failed';
-
-  for (const note of notes) {
-    let success = true;
-    const title = note.title;
-    const body = note.body;
-    const exists = !!note.id;
-    const embeddings = await embedText(note.body).catch(() => {
-      console.error('Failed to embed text, retaining previous embeddings');
-      return note.embeddings || [];
-    });
-
-    if (exists) {
-      await db.notes
-        .update(note.id, {
-          title: note.title,
-          body: note.body,
-          embeddings,
-        })
-        .catch(() => 'failed')
-        .then(() => 'success');
-    } else {
-      await db.notes
-        .add({ title, body, embeddings })
-        .catch(() => (success = false))
-        .then(() => (success = true));
-    }
-
-    if (!success) return 'failed';
-  }
-
-  return 'success';
+  return { id, saveStatus };
 };
 
 export const onDownload = (note: Note) => {

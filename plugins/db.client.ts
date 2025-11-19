@@ -7,10 +7,10 @@ export const db = new Dexie('notes', { addons: [dexieCloud] }) as Dexie & {
   notes: DexieCloudTable<Note, 'id'>;
 };
 
+db.cloud.configure({
+  databaseUrl: 'https://zj6dbj1qd.dexie.cloud',
+});
+
 db.version(1).stores({
-  documents: `
-    @id,
-    title,
-    body,
-    embeddings`,
+  notes: `@id`,
 });

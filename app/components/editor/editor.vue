@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import type { EditorAction } from '~~/shared/types/editor-action';
-  import type { Note } from '~~/shared/types/note';
   import { lineNumbersRelative } from '#imports';
   import { markdown } from '@codemirror/lang-markdown';
   import { languages } from '@codemirror/language-data';
@@ -13,26 +11,25 @@
     prosemarkMarkdownSyntaxExtensions,
   } from '@prosemark/core';
   import { vim } from '@replit/codemirror-vim';
-  import { onDownload, onSave } from '~/composables/handle-note';
-  const props = defineProps<{ note: Note }>();
-  const emit = defineEmits<EditorAction>();
+  import { db } from '~~/plugins/db.client';
+  import { useNoteStore } from '~~/stores/note';
+
   const editorRef = ref<HTMLElement | undefined>(undefined);
   const editor = ref<EditorView | null>(null);
   const isVimMode = ref(true);
   const vimCompartment = new Compartment();
   const lineNumberCompartment = new Compartment();
+  const noteStore = useNoteStore();
 
   onMounted(() => {
     editor.value = new EditorView({
-      doc: props.note.body,
+      doc: noteStore.getNote.body,
       parent: editorRef.value,
       extensions: [
         EditorView.contentAttributes.of({ spellcheck: 'true' }),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
-            const newBody = update.state.doc.toString();
-            const updatedNote: Note = { ...props.note, body: newBody };
-            emit('update', updatedNote);
+            noteStore.updateBody(update.state.doc.toString());
           }
         }),
         vimCompartment.of(vim()),
@@ -68,25 +65,15 @@
       ],
     });
   };
-
-  const save = () => {
-    onSave([props.note]);
-  };
-
-  const download = () => {
-    onDownload(props.note);
-  };
 </script>
 
 <template>
   <div>
+    <UButton @click="db.cloud.login()" />
     <EditorMenu
-      :note="props.note"
       class="sticky top-0 z-1"
       :is-vim-mode="isVimMode"
       @toggle-vim="toggleVim"
-      @download="download"
-      @save="save"
     />
     <div ref="editorRef" class="z-0 editor-container" />
   </div>

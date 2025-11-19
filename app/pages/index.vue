@@ -2,7 +2,7 @@
 
 <template>
   <div>
-    <UButton to="/notes"></UButton>
+    <UButton to="/notes" />
   </div>
 </template>
 
