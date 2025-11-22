@@ -10,21 +10,27 @@
   }>();
   const _emit = defineEmits(['toggleVim']);
   const noteStore = useNoteStore();
+  const modalOpen = ref(false);
 
   const setTitle = () => {
-    const overlay = useOverlay();
-    const modal = overlay.create(EditorTitle);
-    modal.open();
+    modalOpen.value = true;
   };
 
   const save = async () => {
     noteStore.updateSaveStatus('pending');
 
-    if (!noteStore.title) setTitle();
+    if (!noteStore.title) {
+      setTitle();
+    }
 
     const result = await onSave(noteStore.getNote);
     noteStore.updateSaveStatus(result.saveStatus);
     if (result.id) noteStore.updateID(result.id);
+  };
+
+  const closeModal = () => {
+    modalOpen.value = false;
+    save();
   };
 
   const download = () => {
@@ -34,6 +40,7 @@
 <!-- TODO: add binding to document state so that the icons update -->
 
 <template>
+  <EditorTitle v-model:open="modalOpen" @submitted="closeModal" />
   <div
     class="menu-container p-0.5 bg-front border-b-2 border-b-border-highlight"
   >

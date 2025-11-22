@@ -1,15 +1,23 @@
 <script lang="ts" setup>
   import { useNoteStore } from '~~/stores/note';
 
+  const _props = defineProps(["modalOpen"]);
+  const emit = defineEmits(["submitted"]);
   const noteStore = useNoteStore();
   const title = ref('');
   const maxLength = 64;
+
+  const handleSubmit = () => {
+    noteStore.updateTitle(title.value);
+    emit("submitted")
+  }
+
 </script>
 
 <template>
   <UModal title="Set a title" color="front" aria-describedby="Set a title">
     <template #body>
-      <UForm @submit="noteStore.updateTitle(title)">
+      <UForm @submit="handleSubmit">
         <div class="input-container">
           <UFormField>
             <UInput
