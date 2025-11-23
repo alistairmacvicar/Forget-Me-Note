@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import { useNoteStore } from '~~/stores/note';
-  import { onDownload, onSave } from '~/composables/handle-note';
+  import { onDownload, onSave } from '~/composables/handle-note.client';
   import EditorTitle from './editor-title.vue';
 
   const { isVimMode } = defineProps<{

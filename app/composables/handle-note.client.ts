@@ -25,12 +25,13 @@ export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
     let saved;
     const title = note.title;
     const body = note.body;
+    const directory = note.directory;
     const exists = !!note.id;
 
     if (exists) {
-      const embeddings = await embedText(note.body).catch(() => {
+      const embeddings = await embedText(note.body).catch(async () => {
         console.error('Failed to embed text, retaining previous embeddings');
-        return db.notes.get(note.id).embeddings || [];
+        return note.embeddings || [];
       });
 
       await db.notes
@@ -48,7 +49,7 @@ export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
       });
 
       await db.notes
-        .add({ title, body, embeddings })
+        .add({ title, body, embeddings, directory })
         .catch(() => (saved = false))
         .then(() => (saved = true));
     }
@@ -69,12 +70,13 @@ export const onSave = async (
 
   const title = note.title;
   const body = note.body;
+  const directory = note.directory;
   const exists = !!note.id;
 
   if (exists) {
     const embeddings = await embedText(note.body).catch(() => {
       console.error('Failed to embed text, retaining previous embeddings');
-      return db.notes.get(note.id).embeddings || [];
+      return note.embeddings || [];
     });
 
     id = note.id;
@@ -93,7 +95,7 @@ export const onSave = async (
     });
 
     id = await db.notes
-      .add({ title, body, embeddings })
+      .add({ title, body, embeddings, directory })
       .catch(() => (saveStatus = 'failed'));
   }
 

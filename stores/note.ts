@@ -1,4 +1,4 @@
-import type { Note } from '~~/shared/types/note';
+import type { Directory, Note } from '~~/shared/types/note';
 import { defineStore } from 'pinia';
 
 export const useNoteStore = defineStore('note', {
@@ -10,6 +10,10 @@ export const useNoteStore = defineStore('note', {
     saveStatus: null,
     syncStatus: null,
     deleteStatus: null,
+    directory: {
+      name: '~/',
+      parent: null,
+    },
   }),
   getters: {
     getNote: (state) => state,
@@ -32,6 +36,9 @@ export const useNoteStore = defineStore('note', {
     },
     updateID(id: string) {
       this.id = id;
+    },
+    updateDirectory(directory: Directory) {
+      this.directory = directory;
     },
   },
 });

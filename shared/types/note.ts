@@ -7,6 +7,10 @@ export type SyncStatus =
   | 'disabled'
   | null;
 export type DeleteStatus = 'deleting' | 'deleted' | 'failed' | null;
+export interface Directory {
+  name: string;
+  parent: Directory | null;
+}
 
 export interface Note {
   id: string | null;
@@ -16,4 +20,5 @@ export interface Note {
   saveStatus?: SaveStatus;
   syncStatus?: SyncStatus;
   deleteStatus?: DeleteStatus;
+  directory: Directory;
 }

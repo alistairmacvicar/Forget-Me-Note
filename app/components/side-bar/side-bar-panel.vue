@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { Panel } from '~~/shared/types/panel';
   import useSidebarResize from '../../composables/useSidebarResize.client';
+  import Files from './side-bar-panel/files.vue';
 
   const props = defineProps<{ activePanel: Panel; menuShown: boolean }>();
 
@@ -21,6 +22,10 @@
       {{ props.activePanel }}
     </h2>
 
+    <div v-if="activePanel === 'files'">
+      <Files />
+    </div>
+
     <div
       class="resizer absolute right-0 top-0 h-full w-2"
       :style="{
@@ -29,7 +34,7 @@
         background: 'transparent',
       }"
       aria-hidden="true"
-      @pointerdown.prevent="(e) => props.menuShown && onPointerDown(e)"
+      @pointerdown.prevent="(event) => props.menuShown && onPointerDown(event)"
     />
   </div>
 </template>
