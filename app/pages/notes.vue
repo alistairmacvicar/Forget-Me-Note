@@ -1,8 +1,6 @@
 <script setup lang="ts"></script>
-<!-- TODO: Add a way to change the title (set default title to null, and add a popup when trying to save a null title) -->
 <!-- TODO: Move the login button to inside the settings menu (should really look at opt-in cloud sync) -->
 <!-- TODO: Get folders working (dexie?) -->
-<!-- TODO: maybe get rid of the actions in the note store? I'm not validating anything.... or should I be? -->
 
 <template>
   <div class="layout">

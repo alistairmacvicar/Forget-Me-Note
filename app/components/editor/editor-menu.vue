@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-  import type { Note } from '~~/shared/types/note';
   import { useNoteStore } from '~~/stores/note';
   import { onDownload, onSave } from '~/composables/handle-note';
   import EditorTitle from './editor-title.vue';
 
-  const { isVimMode, note } = defineProps<{
+  const { isVimMode } = defineProps<{
     isVimMode?: boolean;
-    note?: Note;
   }>();
   const _emit = defineEmits(['toggleVim']);
   const noteStore = useNoteStore();
@@ -21,6 +19,7 @@
 
     if (!noteStore.title) {
       setTitle();
+      return;
     }
 
     const result = await onSave(noteStore.getNote);
@@ -36,8 +35,13 @@
   const download = () => {
     onDownload(noteStore.getNote);
   };
+
+  watch(modalOpen, () => {
+    if (!modalOpen.value && !noteStore.title) {
+      noteStore.updateSaveStatus('failed');
+    }
+  });
 </script>
-<!-- TODO: add binding to document state so that the icons update -->
 
 <template>
   <EditorTitle v-model:open="modalOpen" @submitted="closeModal" />
@@ -63,56 +67,68 @@
       />
     </UTooltip>
 
-    <UTooltip
-      v-if="note?.saveStatus === 'saved'"
-      text="Current document saved."
-    >
-      <Icon name="mdi-light:check-circle" class="icon" />
-    </UTooltip>
-    <UTooltip
-      v-else-if="note?.saveStatus === 'pending'"
-      text="Saving current document..."
-    >
-      <Icon name="line-md:loading-loop" class="icon" stroke-width="1" />
-    </UTooltip>
-    <UTooltip
-      v-else-if="note?.saveStatus === 'failed'"
-      text="Failed to save current document."
-    >
-      <Icon name="mdi-light:alert-circle" class="icon" />
-    </UTooltip>
-
-    <UTooltip
-      v-if="note?.syncStatus === 'downloading'"
-      text="Syncing from cloud..."
-    >
-      <Icon name="mdi-light:cloud-download" class="icon" />
-    </UTooltip>
-    <UTooltip
-      v-else-if="note?.syncStatus === 'uploading'"
-      text="Syncing to cloud..."
-    >
-      <Icon name="line-md:cloud-upload" class="icon" stroke-width="1" />
-    </UTooltip>
-    <UTooltip
-      v-else-if="note?.syncStatus === 'synced'"
-      text="Cloud sync complete."
-    >
-      <Icon name="mdi-light:cloud" class="icon" />
-    </UTooltip>
-    <UTooltip
-      v-else-if="note?.syncStatus === 'disabled'"
-      text="Cloud sync not enabled."
-    >
-      <Icon name="material-symbols-light:cloud-off-outline" class="icon" />
-    </UTooltip>
-
     <UTooltip text="Download current document">
       <Icon
         name="mdi-light:download"
         class="icon cursor-pointer"
         @click="download"
       />
+    </UTooltip>
+
+    <UTooltip
+      v-if="noteStore.saveStatus === 'saved'"
+      text="Current document saved."
+    >
+      <Icon name="mdi-light:check-circle" class="icon" />
+    </UTooltip>
+    <UTooltip
+      v-else-if="noteStore.saveStatus === 'pending'"
+      text="Saving current document..."
+    >
+      <Icon name="line-md:loading-loop" class="icon" stroke-width="1" />
+    </UTooltip>
+    <UTooltip
+      v-else-if="noteStore.saveStatus === 'failed'"
+      text="Failed to save current document."
+    >
+      <Icon name="mdi-light:alert-circle" class="icon" />
+    </UTooltip>
+    <UTooltip
+      v-else-if="noteStore.saveStatus === null"
+      text="Note not yet saved."
+    >
+      <Icon name="mdi-light:alert-circle" class="icon" />
+    </UTooltip>
+
+    <UTooltip
+      v-if="noteStore.syncStatus === 'downloading'"
+      text="Syncing from cloud..."
+    >
+      <Icon name="mdi-light:cloud-download" class="icon" />
+    </UTooltip>
+    <UTooltip
+      v-else-if="noteStore.syncStatus === 'uploading'"
+      text="Syncing to cloud..."
+    >
+      <Icon name="line-md:cloud-upload" class="icon" stroke-width="1" />
+    </UTooltip>
+    <UTooltip
+      v-else-if="noteStore.syncStatus === 'synced'"
+      text="Cloud sync complete."
+    >
+      <Icon name="mdi-light:cloud" class="icon" />
+    </UTooltip>
+    <UTooltip
+      v-else-if="noteStore.syncStatus === 'disabled'"
+      text="Cloud sync not enabled."
+    >
+      <Icon name="material-symbols-light:cloud-off-outline" class="icon" />
+    </UTooltip>
+    <UTooltip
+      v-else-if="noteStore.syncStatus === null"
+      text="Note not yet synced."
+    >
+      <Icon name="material-symbols-light:cloud-off-outline" class="icon" />
     </UTooltip>
   </div>
 </template>

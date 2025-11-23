@@ -20,6 +20,30 @@
   const vimCompartment = new Compartment();
   const lineNumberCompartment = new Compartment();
   const noteStore = useNoteStore();
+  const saveTimer = ref<NodeJS.Timeout | null>(null);
+
+  const saveNote = async () => {
+    noteStore.updateSaveStatus('pending');
+    const result = await onSave(noteStore.getNote);
+    noteStore.updateSaveStatus(result.saveStatus);
+
+    if (result.id) noteStore.updateID(result.id);
+  };
+
+  const toggleVim = () => {
+    if (!editor.value) return;
+
+    isVimMode.value = !isVimMode.value;
+
+    editor.value.dispatch({
+      effects: [
+        vimCompartment.reconfigure(isVimMode.value ? vim() : []),
+        lineNumberCompartment.reconfigure(
+          isVimMode.value ? lineNumbersRelative() : [],
+        ),
+      ],
+    });
+  };
 
   onMounted(() => {
     editor.value = new EditorView({
@@ -45,26 +69,17 @@
     });
 
     editor.value.focus();
+
+    saveTimer.value = setInterval(() => {
+      if (noteStore.title) {
+        saveNote();
+      }
+    }, 60000);
   });
 
   onBeforeUnmount(() => {
     editor.value?.destroy();
   });
-
-  const toggleVim = () => {
-    if (!editor.value) return;
-
-    isVimMode.value = !isVimMode.value;
-
-    editor.value.dispatch({
-      effects: [
-        vimCompartment.reconfigure(isVimMode.value ? vim() : []),
-        lineNumberCompartment.reconfigure(
-          isVimMode.value ? lineNumbersRelative() : [],
-        ),
-      ],
-    });
-  };
 </script>
 
 <template>
