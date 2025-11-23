@@ -3,11 +3,11 @@
   import { getAllNotes } from '#imports';
   import FileSystem from '~/components/notes/file-system.vue';
 
-  const directories: DirectoryStructure = await getAllNotes();
+  const directoryStructure = ref<DirectoryStructure>(await getAllNotes());
 </script>
 
 <template>
-  <FileSystem :directories="directories" />
+  <FileSystem :directory-structure="directoryStructure" />
 </template>
 
 <style scoped></style>

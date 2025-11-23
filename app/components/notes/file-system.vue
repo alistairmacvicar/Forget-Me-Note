@@ -1,19 +1,44 @@
 <script setup lang="ts">
-  const _props = defineProps(['directories']);
+  import type { TreeItem } from '@nuxt/ui';
+  import { computed } from 'vue';
+  const props = defineProps(['directoryStructure']);
+
+  const treeItems = computed(() => {
+    return [buildDirectoryStructure(props.directoryStructure)];
+  });
+
+  function buildDirectoryStructure(
+    directoryStructure: DirectoryStructure,
+  ): TreeItem {
+    const children: TreeItem[] = [];
+    const childDirectories = directoryStructure.children;
+    const notes = directoryStructure.root.notes;
+
+    for (const child of childDirectories) {
+      children.push(buildDirectoryStructure(child));
+    }
+
+    for (const note of notes) {
+      const noteItem = { label: note.title ?? undefined, children: [] };
+      children.push(noteItem);
+    }
+
+    return {
+      label: directoryStructure.root.directory.name,
+      children,
+    };
+  }
 </script>
 
 <template>
   <div>
-    <span> dirname: {{ directories.root.directory.name }}</span>
-    <ul>
-      <li v-for="(child, index) in directories.children" :key="index">
-        <FileSystem :directory-structure="child" />
-      </li>
-    </ul>
-    <ul>
-      <li v-for="(note, index) in directories.root.notes" :key="index">
-        {{ note.title }}
-      </li>
-    </ul>
+    <UTree :items="treeItems" color="color-normal" />
   </div>
 </template>
+
+<style>
+  :root {
+    --ui-bg-elevated: var(--front);
+    --ui-text-highlighted: var(--normal);
+  }
+</style>

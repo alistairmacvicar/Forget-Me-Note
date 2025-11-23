@@ -4,7 +4,6 @@
   import Files from './side-bar-panel/files.vue';
 
   const props = defineProps<{ activePanel: Panel; menuShown: boolean }>();
-
   const { panelRef, width, onPointerDown } = useSidebarResize();
 </script>
 
