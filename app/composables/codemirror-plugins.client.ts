@@ -4,7 +4,7 @@ import { EditorView, lineNumbers } from '@codemirror/view';
 
 const gutter = new Compartment();
 
-function relativeLineNumbers(lineNo: number, state: EditorState) {
+const relativeLineNumbers = (lineNo: number, state: EditorState) => {
   if (lineNo > state.doc.lines) {
     return '0';
   }
@@ -18,9 +18,9 @@ function relativeLineNumbers(lineNo: number, state: EditorState) {
   } else {
     return Math.abs(cursorLine - lineNo).toString();
   }
-}
+};
 
-export function lineNumbersRelative() {
+export const lineNumbersRelative = () => {
   const showLineNumbers = gutter.of(
     lineNumbers({ formatNumber: relativeLineNumbers }),
   );
@@ -37,4 +37,4 @@ export function lineNumbersRelative() {
     },
   );
   return [showLineNumbers, lineNumberUpdateListener];
-}
+};

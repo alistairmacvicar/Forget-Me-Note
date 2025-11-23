@@ -1,8 +1,10 @@
 <script setup lang="ts"></script>
+<!-- TODO: Move the login button to inside the settings menu (should really look at opt-in cloud sync) -->
+<!-- TODO: Get folders working (dexie?) -->
 
 <template>
   <div class="layout">
-    <SideBar class="sidebar" />
+    <SideBar />
     <Editor class="overflow-auto" />
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { downloadToFile, lineNumbersRelative } from '#imports';
+  import { lineNumbersRelative } from '#imports';
   import { markdown } from '@codemirror/lang-markdown';
   import { languages } from '@codemirror/language-data';
   import { Compartment } from '@codemirror/state';
@@ -11,39 +11,24 @@
     prosemarkMarkdownSyntaxExtensions,
   } from '@prosemark/core';
   import { vim } from '@replit/codemirror-vim';
+  import { db } from '~~/plugins/db.client';
+  import { useNoteStore } from '~~/stores/note';
 
-  const text = ref('# ');
-  const filename = ref('note');
   const editorRef = ref<HTMLElement | undefined>(undefined);
   const editor = ref<EditorView | null>(null);
   const isVimMode = ref(true);
   const vimCompartment = new Compartment();
   const lineNumberCompartment = new Compartment();
+  const noteStore = useNoteStore();
+  const saveTimer = ref<NodeJS.Timeout | null>(null);
 
-  onMounted(() => {
-    editor.value = new EditorView({
-      doc: text.value,
-      parent: editorRef.value,
-      extensions: [
-        EditorView.contentAttributes.of({ spellcheck: 'true' }),
-        vimCompartment.of(vim()),
-        lineNumberCompartment.of(lineNumbersRelative()),
-        drawSelection(),
-        markdown({
-          codeLanguages: languages,
-          extensions: [GFM, prosemarkMarkdownSyntaxExtensions],
-        }),
-        prosemarkBasicSetup(),
-        prosemarkBaseThemeSetup(),
-      ],
-    });
+  const saveNote = async () => {
+    noteStore.updateSaveStatus('pending');
+    const result = await onSave(noteStore.getNote);
+    noteStore.updateSaveStatus(result.saveStatus);
 
-    editor.value.focus();
-  });
-
-  onBeforeUnmount(() => {
-    editor.value?.destroy();
-  });
+    if (result.id) noteStore.updateID(result.id);
+  };
 
   const toggleVim = () => {
     if (!editor.value) return;
@@ -60,23 +45,50 @@
     });
   };
 
-  const save = () => {
-    text.value = editor.value?.state.doc.toString() || '';
-  };
+  onMounted(() => {
+    editor.value = new EditorView({
+      doc: noteStore.getNote.body,
+      parent: editorRef.value,
+      extensions: [
+        EditorView.contentAttributes.of({ spellcheck: 'true' }),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            noteStore.updateBody(update.state.doc.toString());
+          }
+        }),
+        vimCompartment.of(vim()),
+        lineNumberCompartment.of(lineNumbersRelative()),
+        drawSelection(),
+        markdown({
+          codeLanguages: languages,
+          extensions: [GFM, prosemarkMarkdownSyntaxExtensions],
+        }),
+        prosemarkBasicSetup(),
+        prosemarkBaseThemeSetup(),
+      ],
+    });
 
-  const download = () => {
-    save();
-    downloadToFile(filename.value, text.value);
-  };
+    editor.value.focus();
+
+    saveTimer.value = setInterval(() => {
+      if (noteStore.title) {
+        saveNote();
+      }
+    }, 60000);
+  });
+
+  onBeforeUnmount(() => {
+    editor.value?.destroy();
+  });
 </script>
 
 <template>
   <div>
+    <UButton @click="db.cloud.login()" />
     <EditorMenu
       class="sticky top-0 z-1"
       :is-vim-mode="isVimMode"
       @toggle-vim="toggleVim"
-      @download="download"
     />
     <div ref="editorRef" class="z-0 editor-container" />
   </div>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
+  import type { Panel } from '~~/shared/types/panel';
   import useSidebarResize from '../../composables/useSidebarResize.client';
 
-  const props = defineProps<{ activePanel?: Panel; menuShown?: boolean }>();
+  const props = defineProps<{ activePanel: Panel; menuShown: boolean }>();
 
   const { panelRef, width, onPointerDown } = useSidebarResize();
 </script>

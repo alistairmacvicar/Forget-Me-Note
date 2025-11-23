@@ -2,7 +2,9 @@
 
 <template>
   <div class="header bg-card border-b-2 border-b-border-highlight">
-    <div class="title cursor-pointer font-mono text-2xl">Forget-Me-Note</div>
+    <div class="title cursor-pointer font-mono text-2xl">
+      Forget-Me-Note
+    </div>
 
     <ULink
       to="https://github.com/alistairmacvicar/forget-me-note"
