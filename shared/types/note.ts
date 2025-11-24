@@ -15,7 +15,7 @@ export interface Directory {
 export interface Note {
   id: string | null;
   title: string | null;
-  body: string;
+  body?: string;
   embeddings?: Embedding;
   saveStatus?: SaveStatus;
   syncStatus?: SyncStatus;

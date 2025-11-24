@@ -67,7 +67,12 @@ const sortDirectoryStructure = (directoryMap: Map<string, DirectoryGroup>) => {
 };
 
 export const getAllNotes = async (): Promise<DirectoryStructure> => {
-  const notes = await db.notes.toArray();
+  const query = await db.notes.toArray();
+  const notes = query.map((note) => ({
+    id: note.id,
+    title: note.title,
+    directory: note.directory,
+  }));
   const directoryMap = new Map<string, DirectoryGroup>();
 
   for (const note of notes) {
