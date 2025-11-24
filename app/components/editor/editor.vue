@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import type { TreeItem } from '@nuxt/ui';
   import { lineNumbersRelative } from '#imports';
   import { markdown } from '@codemirror/lang-markdown';
   import { languages } from '@codemirror/language-data';
@@ -12,7 +13,9 @@
   } from '@prosemark/core';
   import { vim } from '@replit/codemirror-vim';
   import { db } from '~~/plugins/db.client';
+  import { useFileSelectionStore } from '~~/stores/file-selection';
   import { useNoteStore } from '~~/stores/note';
+  import EditorChangeNote from './editor-change-note.vue';
 
   const editorRef = ref<HTMLElement | undefined>(undefined);
   const editor = ref<EditorView | null>(null);
@@ -20,15 +23,11 @@
   const vimCompartment = new Compartment();
   const lineNumberCompartment = new Compartment();
   const noteStore = useNoteStore();
+  const fileSelectionStore = useFileSelectionStore();
   const saveTimer = ref<NodeJS.Timeout | null>(null);
-
-  const saveNote = async () => {
-    noteStore.updateSaveStatus('pending');
-    const result = await onSave(noteStore.getNote);
-    noteStore.updateSaveStatus(result.saveStatus);
-
-    if (result.id) noteStore.updateID(result.id);
-  };
+  const setTitleModalOpen = ref(false);
+  const changeNoteModalOpen = ref(false);
+  const newNote = ref<TreeItem>();
 
   const toggleVim = () => {
     if (!editor.value) return;
@@ -45,15 +44,41 @@
     });
   };
 
-  onMounted(() => {
-    editor.value = new EditorView({
-      doc: noteStore.getNote.body,
+  const setTitle = () => {
+    setTitleModalOpen.value = true;
+  };
+
+  const save = async () => {
+    noteStore.note.saveStatus = 'pending';
+
+    if (!noteStore.note.title) {
+      setTitle();
+      return;
+    }
+
+    const result = await onSave(noteStore.note);
+    noteStore.note.saveStatus = result.saveStatus;
+    if (result.id) noteStore.note.id = result.id;
+  };
+
+  const closeSetTitleModal = () => {
+    setTitleModalOpen.value = false;
+    save();
+  };
+
+  const changeNote = () => {
+    changeNoteModalOpen.value = true;
+  };
+
+  const createEditor = () => {
+    return new EditorView({
+      doc: noteStore.note.body,
       parent: editorRef.value,
       extensions: [
         EditorView.contentAttributes.of({ spellcheck: 'true' }),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
-            noteStore.updateBody(update.state.doc.toString());
+            noteStore.note.body = update.state.doc.toString();
           }
         }),
         vimCompartment.of(vim()),
@@ -67,29 +92,70 @@
         prosemarkBaseThemeSetup(),
       ],
     });
+  };
 
-    editor.value.focus();
+  const destroyEditor = () => {
+    editor.value?.destroy();
+  };
 
+  const handleChangeNoteRequest = async (change: boolean) => {
+    changeNoteModalOpen.value = false;
+
+    if (change) {
+      await save();
+      const result = await onGetNote(newNote.value?.key);
+      if (result) {
+        noteStore.note = result;
+        destroyEditor();
+        editor.value = createEditor();
+      } else {
+        console.warn('Something went wrong while changing notes');
+      }
+    }
+  };
+  onMounted(() => {
+    editor.value = createEditor();
     saveTimer.value = setInterval(() => {
-      if (noteStore.title) {
-        saveNote();
+      if (noteStore.note.title) {
+        save();
       }
     }, 60000);
   });
 
   onBeforeUnmount(() => {
-    editor.value?.destroy();
+    destroyEditor();
+  });
+
+  watch(fileSelectionStore, () => {
+    const items = fileSelectionStore.items;
+    const item = items[0];
+
+    if (items.length === 1 && item && item.key) {
+      newNote.value = item as TreeItem;
+      changeNote();
+    }
+  });
+
+  watch(setTitleModalOpen, () => {
+    if (!setTitleModalOpen.value && !noteStore.note.title) {
+      noteStore.note.saveStatus = 'failed';
+    }
   });
 </script>
 
 <template>
   <div>
     <UButton @click="db.cloud.login()" />
-    <EditorMenu
-      class="sticky top-0 z-1"
-      :is-vim-mode="isVimMode"
-      @toggle-vim="toggleVim"
+    <EditorTitle
+      v-model:open="setTitleModalOpen"
+      @submitted="closeSetTitleModal"
     />
+    <EditorChangeNote
+      v-model:open="changeNoteModalOpen"
+      :new-note="newNote"
+      @change="handleChangeNoteRequest"
+    />
+    <EditorMenu :is-vim-mode="isVimMode" @toggle-vim="toggleVim" @save="save" />
     <div ref="editorRef" class="z-0 editor-container" />
   </div>
 </template>

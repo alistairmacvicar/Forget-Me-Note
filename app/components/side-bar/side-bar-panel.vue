@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import type { Panel } from '~~/shared/types/panel';
   import useSidebarResize from '../../composables/useSidebarResize.client';
-  import Files from './side-bar-panel/files.vue';
+  import FileSystem from '../notes/file-system.vue';
 
-  const props = defineProps<{ activePanel: Panel; menuShown: boolean }>();
+  const _props = defineProps<{ activePanel: Panel; menuShown: boolean }>();
   const { panelRef, width, onPointerDown } = useSidebarResize();
 </script>
 
@@ -12,17 +12,17 @@
     ref="panelRef"
     class="menu p-4 resize-x relative"
     :class="{
-      'w-0 hidden': !props.menuShown,
-      'block border-r-2 border-r-border-highlight': props.menuShown,
+      'w-0 hidden': !menuShown,
+      'block border-r-2 border-r-border-highlight': menuShown,
     }"
     :style="width ? { width: `${width}px` } : undefined"
   >
     <h2>
-      {{ props.activePanel }}
+      {{ activePanel }}
     </h2>
 
     <div v-if="activePanel === 'files'">
-      <Files />
+      <FileSystem />
     </div>
 
     <div
@@ -33,7 +33,7 @@
         background: 'transparent',
       }"
       aria-hidden="true"
-      @pointerdown.prevent="(event) => props.menuShown && onPointerDown(event)"
+      @pointerdown.prevent="(event) => menuShown && onPointerDown(event)"
     />
   </div>
 </template>

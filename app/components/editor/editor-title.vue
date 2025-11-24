@@ -1,17 +1,16 @@
 <script lang="ts" setup>
   import { useNoteStore } from '~~/stores/note';
 
-  const _props = defineProps(["modalOpen"]);
-  const emit = defineEmits(["submitted"]);
+  const _props = defineProps(['setTitleModalOpen']);
+  const emit = defineEmits(['submitted']);
   const noteStore = useNoteStore();
   const title = ref('');
   const maxLength = 64;
 
   const handleSubmit = () => {
-    noteStore.updateTitle(title.value);
-    emit("submitted")
-  }
-
+    noteStore.note.title = title.value;
+    emit('submitted');
+  };
 </script>
 
 <template>

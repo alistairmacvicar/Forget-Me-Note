@@ -2,7 +2,6 @@
   import type { Panel } from '~~/shared/types/panel';
 
   const activePanel = ref<Panel>(null);
-
   const menuShown = computed(() => !!activePanel.value);
 </script>
 

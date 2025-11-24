@@ -39,6 +39,7 @@ export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
           title,
           body,
           embeddings,
+          directory,
         })
         .catch(() => (saved = false))
         .then(() => (saved = true));
@@ -86,6 +87,7 @@ export const onSave = async (
         title,
         body,
         embeddings,
+        directory,
       })
       .catch(() => (saveStatus = 'failed'));
   } else {
@@ -113,4 +115,10 @@ export const onDownload = (note: Note) => {
   a.click();
   document.body.removeChild(a);
   window.URL.revokeObjectURL(url);
+};
+
+export const onGetNote = async (id: string) => {
+  const note = await db.notes.get(id);
+
+  return note;
 };
