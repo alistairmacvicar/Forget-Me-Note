@@ -1,20 +1,20 @@
 <script lang="ts" setup>
   const _props = defineProps(['changeNoteModalOpen', 'newNote']);
-  const _emit = defineEmits(['change']);
+  const _emit = defineEmits(['save']);
 </script>
 
 <template>
   <UModal
-    :title="`Switch to ${newNote?.label}`"
+    title="Would you like to save your current note first?"
     color="front"
-    aria-describedby="Set a title"
+    aria-describedby="Switch open note"
   >
     <template #body>
-      <button class="flex align-middle" @click="$emit('change', true)">
-        <Icon name="mdi-light:arrow-right" class="cursor-pointer" />
+      <button class="flex align-middle" @click="$emit('save', true)">
+        Yes
       </button>
-      <button class="flex align-middle" @click="$emit('change', false)">
-        <Icon name="mdi-light:arrow-right" class="cursor-pointer" />
+      <button class="flex align-middle" @click="$emit('save', false)">
+        No
       </button>
     </template>
   </UModal>

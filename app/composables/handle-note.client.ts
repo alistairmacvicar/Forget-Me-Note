@@ -25,14 +25,18 @@ export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
     let saved;
     const title = note.title;
     const body = note.body;
-    const directory = note.directory;
+    const directory = { ...note.directory };
     const exists = !!note.id;
 
     if (exists) {
-      const embeddings = await embedText(note.body).catch(async () => {
-        console.error('Failed to embed text, retaining previous embeddings');
-        return note.embeddings || [];
-      });
+      const embeddings = note.body
+        ? await embedText(note.body).catch(async () => {
+            console.error(
+              'Failed to embed text, retaining previous embeddings',
+            );
+            return note.embeddings || [];
+          })
+        : note.embeddings || [];
 
       await db.notes
         .update(note.id, {
@@ -44,7 +48,7 @@ export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
         .catch(() => (saved = false))
         .then(() => (saved = true));
     } else {
-      const embeddings = await embedText(note.body).catch(() => {
+      const embeddings = await embedText(note.body || '').catch(() => {
         console.error('Failed to embed text');
         return [];
       });
@@ -71,14 +75,16 @@ export const onSave = async (
 
   const title = note.title;
   const body = note.body;
-  const directory = note.directory;
+  const directory = { ...note.directory };
   const exists = !!note.id;
 
   if (exists) {
-    const embeddings = await embedText(note.body).catch(() => {
-      console.error('Failed to embed text, retaining previous embeddings');
-      return note.embeddings || [];
-    });
+    const embeddings = note.body
+      ? await embedText(note.body).catch(() => {
+          console.error('Failed to embed text, retaining previous embeddings');
+          return note.embeddings || [];
+        })
+      : note.embeddings || [];
 
     id = note.id;
 
@@ -91,7 +97,7 @@ export const onSave = async (
       })
       .catch(() => (saveStatus = 'failed'));
   } else {
-    const embeddings = await embedText(note.body).catch(() => {
+    const embeddings = await embedText(note.body || '').catch(() => {
       console.error('Failed to embed text');
       return [];
     });

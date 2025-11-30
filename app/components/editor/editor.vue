@@ -15,7 +15,6 @@
   import { db } from '~~/plugins/db.client';
   import { useFileSelectionStore } from '~~/stores/file-selection';
   import { useNoteStore } from '~~/stores/note';
-  import EditorChangeNote from './editor-change-note.vue';
 
   const editorRef = ref<HTMLElement | undefined>(undefined);
   const editor = ref<EditorView | null>(null);
@@ -26,7 +25,6 @@
   const fileSelectionStore = useFileSelectionStore();
   const saveTimer = ref<NodeJS.Timeout | null>(null);
   const setTitleModalOpen = ref(false);
-  const changeNoteModalOpen = ref(false);
   const newNote = ref<TreeItem>();
 
   const toggleVim = () => {
@@ -44,7 +42,7 @@
     });
   };
 
-  const setTitle = () => {
+  const openSetTitleModal = () => {
     setTitleModalOpen.value = true;
   };
 
@@ -52,7 +50,7 @@
     noteStore.note.saveStatus = 'pending';
 
     if (!noteStore.note.title) {
-      setTitle();
+      openSetTitleModal();
       return;
     }
 
@@ -64,10 +62,6 @@
   const closeSetTitleModal = () => {
     setTitleModalOpen.value = false;
     save();
-  };
-
-  const changeNote = () => {
-    changeNoteModalOpen.value = true;
   };
 
   const createEditor = () => {
@@ -98,21 +92,19 @@
     editor.value?.destroy();
   };
 
-  const handleChangeNoteRequest = async (change: boolean) => {
-    changeNoteModalOpen.value = false;
+  const handleChangeNoteRequest = async () => {
+    await save();
 
-    if (change) {
-      await save();
-      const result = await onGetNote(newNote.value?.key);
-      if (result) {
-        noteStore.note = result;
-        destroyEditor();
-        editor.value = createEditor();
-      } else {
-        console.warn('Something went wrong while changing notes');
-      }
+    const result = await onGetNote(newNote.value?.key);
+    if (result) {
+      noteStore.note = result;
+      destroyEditor();
+      editor.value = createEditor();
+    } else {
+      console.warn('Something went wrong while changing notes');
     }
   };
+
   onMounted(() => {
     editor.value = createEditor();
     saveTimer.value = setInterval(() => {
@@ -132,7 +124,7 @@
 
     if (items.length === 1 && item && item.key) {
       newNote.value = item as TreeItem;
-      changeNote();
+      handleChangeNoteRequest();
     }
   });
 
@@ -149,11 +141,6 @@
     <EditorTitle
       v-model:open="setTitleModalOpen"
       @submitted="closeSetTitleModal"
-    />
-    <EditorChangeNote
-      v-model:open="changeNoteModalOpen"
-      :new-note="newNote"
-      @change="handleChangeNoteRequest"
     />
     <EditorMenu :is-vim-mode="isVimMode" @toggle-vim="toggleVim" @save="save" />
     <div ref="editorRef" class="z-0 editor-container" />
