@@ -20,9 +20,11 @@ const relativeLineNumbers = (lineNo: number, state: EditorState) => {
   }
 };
 
-export const lineNumbersRelative = () => {
+export const lineNumbersRelative = (relative: boolean) => {
   const showLineNumbers = gutter.of(
-    lineNumbers({ formatNumber: relativeLineNumbers }),
+    relative
+      ? lineNumbers({ formatNumber: relativeLineNumbers })
+      : lineNumbers(),
   );
 
   const lineNumberUpdateListener = EditorView.updateListener.of(
@@ -30,7 +32,9 @@ export const lineNumbersRelative = () => {
       if (viewUpdate.selectionSet) {
         viewUpdate.view.dispatch({
           effects: gutter.reconfigure(
-            lineNumbers({ formatNumber: relativeLineNumbers }),
+            relative
+              ? lineNumbers({ formatNumber: relativeLineNumbers })
+              : lineNumbers(),
           ),
         });
       }

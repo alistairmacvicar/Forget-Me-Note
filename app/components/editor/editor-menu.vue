@@ -1,15 +1,21 @@
 <script lang="ts" setup>
   import { useNoteStore } from '~~/stores/note';
+  import { useUserStore } from '~~/stores/user';
   import { onDownload } from '~/composables/handle-note.client';
 
-  const { isVimMode } = defineProps<{
-    isVimMode?: boolean;
-  }>();
   const _emit = defineEmits(['toggleVim', 'save']);
   const noteStore = useNoteStore();
+  const userStore = useUserStore();
+  const isVimMode = computed(() => {
+    return userStore.preferences.plugins.vim;
+  });
 
   const download = () => {
     onDownload(noteStore.getNote);
+  };
+
+  const toggleVim = () => {
+    userStore.preferences.plugins.vim = !userStore.preferences.plugins.vim;
   };
 </script>
 
@@ -22,7 +28,7 @@
         <div class="cursor-default">
           {{ 'Editor mode: ' }}
         </div>
-        <div class="cursor-pointer" @click="$emit('toggleVim')">
+        <div class="cursor-pointer" @click="toggleVim">
           {{ isVimMode ? 'Vim' : 'Normal' }}
         </div>
       </div>

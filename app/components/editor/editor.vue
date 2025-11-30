@@ -1,46 +1,18 @@
 <script setup lang="ts">
+  import type { EditorView } from '@codemirror/view';
   import type { TreeItem } from '@nuxt/ui';
-  import { lineNumbersRelative } from '#imports';
-  import { markdown } from '@codemirror/lang-markdown';
-  import { languages } from '@codemirror/language-data';
-  import { Compartment } from '@codemirror/state';
-  import { drawSelection, EditorView } from '@codemirror/view';
-  import { GFM } from '@lezer/markdown';
-  import {
-    prosemarkBaseThemeSetup,
-    prosemarkBasicSetup,
-    prosemarkMarkdownSyntaxExtensions,
-  } from '@prosemark/core';
-  import { vim } from '@replit/codemirror-vim';
+  import { createEditor } from '#imports';
   import { db } from '~~/plugins/db.client';
   import { useFileSelectionStore } from '~~/stores/file-selection';
   import { useNoteStore } from '~~/stores/note';
 
-  const editorRef = ref<HTMLElement | undefined>(undefined);
+  const editorDiv = ref<HTMLElement | undefined>(undefined);
   const editor = ref<EditorView | null>(null);
-  const isVimMode = ref(true);
-  const vimCompartment = new Compartment();
-  const lineNumberCompartment = new Compartment();
+  const saveTimer = ref<NodeJS.Timeout | null>(null);
+  const newNote = ref<TreeItem>();
   const noteStore = useNoteStore();
   const fileSelectionStore = useFileSelectionStore();
-  const saveTimer = ref<NodeJS.Timeout | null>(null);
   const setTitleModalOpen = ref(false);
-  const newNote = ref<TreeItem>();
-
-  const toggleVim = () => {
-    if (!editor.value) return;
-
-    isVimMode.value = !isVimMode.value;
-
-    editor.value.dispatch({
-      effects: [
-        vimCompartment.reconfigure(isVimMode.value ? vim() : []),
-        lineNumberCompartment.reconfigure(
-          isVimMode.value ? lineNumbersRelative() : [],
-        ),
-      ],
-    });
-  };
 
   const openSetTitleModal = () => {
     setTitleModalOpen.value = true;
@@ -64,30 +36,6 @@
     save();
   };
 
-  const createEditor = () => {
-    return new EditorView({
-      doc: noteStore.note.body,
-      parent: editorRef.value,
-      extensions: [
-        EditorView.contentAttributes.of({ spellcheck: 'true' }),
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) {
-            noteStore.note.body = update.state.doc.toString();
-          }
-        }),
-        vimCompartment.of(vim()),
-        lineNumberCompartment.of(lineNumbersRelative()),
-        drawSelection(),
-        markdown({
-          codeLanguages: languages,
-          extensions: [GFM, prosemarkMarkdownSyntaxExtensions],
-        }),
-        prosemarkBasicSetup(),
-        prosemarkBaseThemeSetup(),
-      ],
-    });
-  };
-
   const destroyEditor = () => {
     editor.value?.destroy();
   };
@@ -99,14 +47,14 @@
     if (result) {
       noteStore.note = result;
       destroyEditor();
-      editor.value = createEditor();
+      editor.value = createEditor(editorDiv.value);
     } else {
       console.warn('Something went wrong while changing notes');
     }
   };
 
   onMounted(() => {
-    editor.value = createEditor();
+    editor.value = createEditor(editorDiv.value);
     saveTimer.value = setInterval(() => {
       if (noteStore.note.title) {
         save();
@@ -142,8 +90,8 @@
       v-model:open="setTitleModalOpen"
       @submitted="closeSetTitleModal"
     />
-    <EditorMenu :is-vim-mode="isVimMode" @toggle-vim="toggleVim" @save="save" />
-    <div ref="editorRef" class="z-0 editor-container" />
+    <EditorMenu @save="save" />
+    <div ref="editorDiv" class="z-0 editor-container" />
   </div>
 </template>
 
@@ -154,7 +102,6 @@
     padding: 2rem 2rem 0 2rem;
 
     --font: var(--font-mono);
-
     --font-size: var(--text-base);
     --font-size-h1: var(--text-4xl);
     --font-size-h2: var(--text-3xl);
