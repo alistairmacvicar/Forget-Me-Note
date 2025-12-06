@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { EditorView } from '@codemirror/view';
   import type { TreeItem } from '@nuxt/ui';
-  import { createEditor } from '#imports';
+  import { onCreateEditor } from '#imports';
   import { db } from '~~/plugins/db.client';
   import { useFileSelectionStore } from '~~/stores/file-selection';
   import { useNoteStore } from '~~/stores/note';
@@ -26,9 +26,10 @@
       return;
     }
 
-    const result = await onSave(noteStore.note);
+    const result = await onSaveNote(noteStore.note);
     noteStore.note.saveStatus = result.saveStatus;
     if (result.id) noteStore.note.id = result.id;
+    if (result.directoryId) noteStore.note.directoryId = result.directoryId;
   };
 
   const closeSetTitleModal = () => {
@@ -36,7 +37,7 @@
     save();
   };
 
-  const destroyEditor = () => {
+  const onDestroyEditor = () => {
     editor.value?.destroy();
   };
 
@@ -46,15 +47,15 @@
     const result = await onGetNote(newNote.value?.key);
     if (result) {
       noteStore.note = result;
-      destroyEditor();
-      editor.value = createEditor(editorDiv.value);
+      onDestroyEditor();
+      editor.value = onCreateEditor(editorDiv.value);
     } else {
       console.warn('Something went wrong while changing notes');
     }
   };
 
   onMounted(() => {
-    editor.value = createEditor(editorDiv.value);
+    editor.value = onCreateEditor(editorDiv.value);
     saveTimer.value = setInterval(() => {
       if (noteStore.note.title) {
         save();
@@ -63,14 +64,14 @@
   });
 
   onBeforeUnmount(() => {
-    destroyEditor();
+    onDestroyEditor();
   });
 
   watch(fileSelectionStore, () => {
     const items = fileSelectionStore.items;
     const item = items[0];
 
-    if (items.length === 1 && item && item.key) {
+    if (items.length === 1 && item && item.key && !item.children?.length) {
       newNote.value = item as TreeItem;
       handleChangeNoteRequest();
     }

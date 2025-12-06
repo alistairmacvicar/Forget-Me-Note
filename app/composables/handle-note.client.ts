@@ -2,7 +2,7 @@ import type { DeleteStatus, Note, SaveStatus } from '~~/shared/types/note';
 import { db } from '~~/plugins/db.client';
 import { embedText } from './embed-text.client';
 
-export const onDelete = async (notes: Note[]): Promise<DeleteStatus> => {
+export const onDeleteNote = async (notes: Note[]): Promise<DeleteStatus> => {
   if (!notes[0]) return 'failed';
 
   if (notes.length > 1) {
@@ -18,17 +18,17 @@ export const onDelete = async (notes: Note[]): Promise<DeleteStatus> => {
     .then(() => 'deleted');
 };
 
-export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
+export const onBulkSaveNotes = async (notes: Note[]): Promise<SaveStatus> => {
   if (!notes[0]) return 'failed';
 
   for (const note of notes) {
     let saved;
     const title = note.title;
     const body = note.body;
-    const directory = { ...note.directory };
     const exists = !!note.id;
 
     if (exists) {
+      const directoryId = note.directoryId;
       const embeddings = note.body
         ? await embedText(note.body).catch(async () => {
             console.error(
@@ -43,18 +43,19 @@ export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
           title,
           body,
           embeddings,
-          directory,
+          directory: directoryId,
         })
         .catch(() => (saved = false))
         .then(() => (saved = true));
     } else {
+      const directoryId = await onGetRootDirectory();
       const embeddings = await embedText(note.body || '').catch(() => {
         console.error('Failed to embed text');
         return [];
       });
 
       await db.notes
-        .add({ title, body, embeddings, directory })
+        .add({ title, body, embeddings, directoryId })
         .catch(() => (saved = false))
         .then(() => (saved = true));
     }
@@ -65,17 +66,21 @@ export const onBulkSave = async (notes: Note[]): Promise<SaveStatus> => {
   return 'saved';
 };
 
-export const onSave = async (
+export const onSaveNote = async (
   note: Note,
-): Promise<{ id: string | null; saveStatus: SaveStatus }> => {
+): Promise<{
+  id: string | null;
+  directoryId: string | null;
+  saveStatus: SaveStatus;
+}> => {
   let id: string | null = null;
   let saveStatus: SaveStatus = 'saved';
+  let directoryId: string | null = null;
 
-  if (!note) return { id, saveStatus };
+  if (!note) return { id, directoryId, saveStatus };
 
   const title = note.title;
   const body = note.body;
-  const directory = { ...note.directory };
   const exists = !!note.id;
 
   if (exists) {
@@ -86,6 +91,7 @@ export const onSave = async (
         })
       : note.embeddings || [];
 
+    directoryId = note.directoryId;
     id = note.id;
 
     await db.notes
@@ -93,7 +99,7 @@ export const onSave = async (
         title,
         body,
         embeddings,
-        directory,
+        directoryId,
       })
       .catch(() => (saveStatus = 'failed'));
   } else {
@@ -102,15 +108,16 @@ export const onSave = async (
       return [];
     });
 
+    directoryId = await onGetRootDirectory();
     id = await db.notes
-      .add({ title, body, embeddings, directory })
+      .add({ title, body, embeddings, directoryId })
       .catch(() => (saveStatus = 'failed'));
   }
 
-  return { id, saveStatus };
+  return { id, directoryId, saveStatus };
 };
 
-export const onDownload = (note: Note) => {
+export const onDownloadNote = (note: Note) => {
   const fileContent = note.body || '';
   const blob = new Blob([fileContent], { type: 'file' });
   const url = window.URL.createObjectURL(blob);
