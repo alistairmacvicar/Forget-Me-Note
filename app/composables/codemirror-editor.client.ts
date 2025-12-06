@@ -12,7 +12,7 @@ import { vim } from '@replit/codemirror-vim';
 import { useNoteStore } from '~~/stores/note';
 import { useUserStore } from '~~/stores/user';
 
-export const createEditor = (editorDiv: HTMLElement | undefined) => {
+export const onCreateEditor = (editorDiv: HTMLElement | undefined) => {
   const noteStore = useNoteStore();
   const userStore = useUserStore();
   const preferences = userStore.preferences.plugins;

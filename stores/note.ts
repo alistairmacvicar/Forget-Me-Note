@@ -11,10 +11,7 @@ export const useNoteStore = defineStore('note', {
       saveStatus: null,
       syncStatus: null,
       deleteStatus: null,
-      directory: {
-        name: '~/',
-        parent: null,
-      },
+      directoryId: null,
     } as Note,
   }),
   getters: {

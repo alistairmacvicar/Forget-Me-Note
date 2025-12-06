@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { useNoteStore } from '~~/stores/note';
   import { useUserStore } from '~~/stores/user';
-  import { onDownload } from '~/composables/handle-note.client';
+  import { onDownloadNote } from '~/composables/handle-note.client';
 
   const _emit = defineEmits(['toggleVim', 'save']);
   const noteStore = useNoteStore();
@@ -11,7 +11,7 @@
   });
 
   const download = () => {
-    onDownload(noteStore.getNote);
+    onDownloadNote(noteStore.getNote);
   };
 
   const toggleVim = () => {

@@ -5,6 +5,7 @@ import dexieCloud from 'dexie-cloud-addon';
 
 export const db = new Dexie('notes', { addons: [dexieCloud] }) as Dexie & {
   notes: DexieCloudTable<Note, 'id'>;
+  directories: DexieCloudTable<Directory, 'id'>;
 };
 
 db.cloud.configure({
@@ -13,4 +14,22 @@ db.cloud.configure({
 
 db.version(1).stores({
   notes: `@id`,
+  directories: `@id, path`,
 });
+
+onCreateDirectory('~/');
+
+const testDirectories = [
+  '~/documents/',
+  '~/documents/work/',
+  '~/documents/personal/',
+  '~/documents/work/ica/',
+  '~/fun/',
+  '~/foo/',
+  '~/bar/',
+  '~/fun/bar/',
+];
+
+for (const directory of testDirectories) {
+  onCreateDirectory(directory);
+}
